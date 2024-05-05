@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using TestProject.DTO;
 using TestProject.IService;
 using TestProject.Model;
 
@@ -18,7 +19,7 @@ namespace TestProject.Controllers
 
         [HttpPost]
         [Route("AddCar")]
-        public async Task<IActionResult> AddCar(Cars car)
+        public async Task<IActionResult> AddCar(AddCarsDTO car)
         {
             var result =  await _carService.AddCar(car);
             if(result )
@@ -61,7 +62,7 @@ namespace TestProject.Controllers
 
         [HttpPut]
         [Route("UpdateCar")]
-        public async Task<IActionResult> UpdateCar(Cars car)
+        public async Task<IActionResult> UpdateCar(UpdateCarDTO car)
         {
             var result = await _carService.UpdateCar(car);
             if (result )

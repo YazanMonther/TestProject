@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 using TestProject.DbConnection;
+using TestProject.DTO;
 using TestProject.IService;
 using TestProject.Model;
 
@@ -13,9 +14,17 @@ namespace TestProject.Services
         {
             _dbContext = dbContext;
         }
-        public async Task<bool> AddCar(Cars car)
+        public async Task<bool> AddCar(AddCarsDTO car)
         {
-            await _dbContext.Cars.AddAsync(car);
+            // Auto Mapper
+            var newCar = new Cars()
+            {
+                Id = Guid.NewGuid(),
+                description = car.description,
+                Model = car.Model,
+                name = car.name
+            };
+            await _dbContext.Cars.AddAsync(newCar);
             await _dbContext.SaveChangesAsync();
             return true;
         }
@@ -32,12 +41,27 @@ namespace TestProject.Services
             return false;
         }
 
-        public async Task<List<Cars>> GetAll()
+        public async Task<List<CarsResponseDto>> GetAll()
         {
-            return await _dbContext.Cars.ToListAsync();
+            List<CarsResponseDto> dtoList = new List<CarsResponseDto>();
+         
+            var carList = await _dbContext.Cars.ToListAsync();
+           
+            foreach(var car in carList)
+            {
+                var dtoObj = new CarsResponseDto()
+                {
+                    name = car.name,
+                    description = car.description,
+                    Model = car.Model
+                };
+
+                dtoList.Add(dtoObj);
+            }
+            return dtoList;
         }
 
-        public async Task<bool> UpdateCar(Cars car)
+        public async Task<bool> UpdateCar(UpdateCarDTO car)
         {
             try
             {
